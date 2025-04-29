@@ -40,22 +40,15 @@ if not st.session_state.quiz_started:
 # --------------------
 for idx, q in enumerate(st.session_state.selected_questions):
     st.markdown(f"#### Q{idx+1}. {q['question']}")
-# Shuffle answer options for this question
-shuffled_options = q["options"].copy()
-random.shuffle(shuffled_options)
-
-selected = st.radio(
-    f"Choose your answer for Q{idx+1}:",
-    shuffled_options,
-    key=f"question_{idx}",
-    index=None,
-    label_visibility="collapsed"
-)
-
-# Store original -> shuffled mapping so we can check answer correctly later
-q["shuffled_options"] = shuffled_options
-st.session_state.user_answers[idx] = selected
-st.markdown("---")
+    selected = st.radio(
+        f"Choose your answer for Q{idx+1}:",
+        q["options"],
+        key=f"question_{idx}",
+        index=None,
+        label_visibility="collapsed"
+    )
+    st.session_state.user_answers[idx] = selected
+    st.markdown("---")
 
 # --------------------
 # Submit All Button
@@ -71,8 +64,7 @@ if st.button("Submit All Answers ✅"):
     for idx, q in enumerate(st.session_state.selected_questions):
         user_ans = st.session_state.user_answers.get(idx)
         correct_ans = q['answer']
-        correct_option_text = q['options'][ord(correct_ans) - ord('A')] 
-        is_correct = user_ans == correct_option_text
+        is_correct = user_ans == correct_ans
 
         if is_correct:
             correct += 1
